@@ -44,7 +44,6 @@ save.all = FALSE # (if TRUE, a very large R object of entire posterior is saved)
 
 # Specify Scenario name for output file names
 Scenarios = c("NUE","PUE","MeanNUE","MeanPUE", "NUE2001", "PUE2001") 
-Scenarios = "Test" 
 
 # Execute multiple JABBA runs in loop 
 for(s in 1:6){
@@ -87,10 +86,7 @@ for(s in 1:6){
   
   # use [1] lognormal(mean,stdev) or [2] range (min,max) or
   r.dist = c("lnorm","range")[2] 
-  r.dist = c("lnorm","range")[1] 
-  
-  r.prior = c(0.05, 0.2)
-  r.prior = c(0.1,0.2)
+
   r.prior = "Very low"
   
   #><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>>
@@ -173,9 +169,9 @@ for(s in 1:6){
     cpue = read.csv("C:/Users/BoudreauMA/Desktop/JABBA/cpueHalibut.csv", header=TRUE, sep = ";")   # time series,  requires data.frame(year, cpue.1,cpue.2,...,cpue.N)
     cpue = cpue[,-c(5,6)] 
     
-    cpue$val.PUEcomm[which(cpue$Year < 1991)] <- NA
-    cpue$pueMoy.ngsl[which(cpue$Year < 1991)] <- NA
-    cpue$pueMoy.sgsl[which(cpue$Year < 1991)] <- NA
+    cpue$val.PUEcomm[which(cpue$Year < 2001)] <- NA
+    cpue$pueMoy.ngsl[which(cpue$Year < 2001)] <- NA
+    cpue$pueMoy.sgsl[which(cpue$Year < 2001)] <- NA
     
     meanCPUE = FALSE                                       # Option use mean CPUE from state-space cpue averaging
   }
@@ -210,7 +206,7 @@ for(s in 1:6){
   # Depensation opiton:
   # Set Plim = Blim/K where recruitment may become impaired (e.g. Plim = 0.25) 
   # Choose Plim = 0 to reduce to conventional Schaefer, Fox, Pella models 
-  Plim = 0.05
+  Plim = 0
   
   # Required specification for Pella-Tomlinson (Model = 3)
   BmsyK = 0.6 # Set Surplus Production curve inflection point
