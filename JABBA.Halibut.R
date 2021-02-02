@@ -57,7 +57,7 @@ catch = read.csv("C:/Users/BoudreauMA/Desktop/JABBA/catchHalibut.csv", header=TR
 cpue = read.csv("C:/Users/BoudreauMA/Desktop/JABBA/cpueHalibut.csv", header=TRUE, sep = ";")   # time series,  requires data.frame(year, cpue.1,cpue.2,...,cpue.N)
 
 #Keep only NUE data survey
-cpue = cpue[,-c(2,3,4)] 
+cpue = cpue[,-c(5,6)] 
 
 #Keep only CPUE or NUE data survey after a certain year
 cpue$val.PUEcomm[which(cpue$Year < 1995)] <- NA
@@ -77,44 +77,43 @@ cmsy.bkprior(catch = catch, bw=3, prior.r = c(0.015,0.1))
 cmsy.rprior("Very low")
 
 # Creates a data list with JABBA input and settings to be passed to fit_jabba()
-jbinput<-build_jabba(catch = catch, cpue = cpue,se = NULL, assessment = assessment, scenario = Scenarios,
-                     
-                     model.type = "Schaefer",  # model.type = c("Schaefer","Fox","Pella","Pella_m")
-                     
-                     igamma = c(0.01, 0.01),    # prior for process error variance, default informative igamma ~ mean 0.07, CV 0.4
-                     
-                     sets.q = 1:(ncol(cpue)-1), # assigns catchability q to different CPUE indices. Default is each index a seperate q
-                     
-                     sigma.est = TRUE,      # TRUE: Estimate observation error, else set to value
-                     
-                     sets.var = 1:(ncol(cpue)-1), # estimate individual additional variace
-                     
-                     fixed.obsE = 0.2,     # Minimum fixed observation erro
-                     
-                     sigma.proc = TRUE,     # Estimate process error set sigma.proc == TRUE
-                     
-                     proc.dev.all = TRUE,   # Determines if process error deviation are estimated for all years (TRUE) or only from the point the first abundance index becomes available (FALSE)
-                     
-                     r.dist = c("lnorm","range")[2],  # prior distribution for the intrinsic rate population increas
-                     
-                     r.prior = cmsy.rprior("Very low"),   # prior(mu, lod.sd) for intrinsic rate of population increase
-                     
-                     K.dist = c("lnorm","range")[2],  # prior distribution for unfished biomass  K = B0
-                     
-                     K.prior = c(max(catch$Landings.total),max(catch$Landings.total)*100), # prior(mu,CV) for the unfished biomass K = B0
-                     
-                     psi.dist= c("lnorm","beta")[1],  # prior distribution for the initial biomass depletion B[1]/K
-                     
-                     psi.prior = c(0.6,0.2),    # depletionprior(mu, CV) for the initial biomass depletion B[1]/K
-                     
-                     Plim = 0,      # Set Plim = Blim/K where recruitment may become impaired (e.g. Plim = 0.25)
-                     
-                     BmsyK = 0.4,    # Inflection point of the surplus production curve, requires Pella-Tomlinson (model = 3 | model 4)
-                     
-                     )  
+
+# Scenario 1 : without process error
+jbinput1<-build_jabba(catch = catch, cpue = cpue,se = NULL, assessment = assessment, scenario = Scenarios,
+                      
+                      model.type = "Schaefer",  # model.type = c("Schaefer","Fox","Pella","Pella_m")
+                      
+                      sigma.est = TRUE,      # TRUE: Estimate observation error, else set to value
+                      
+                      fixed.obsE = 0.2,     # Minimum fixed observation erro
+                      
+                      sigma.proc = TRUE,     # Estimate process error set sigma.proc == TRUE
+                      
+                      igamma = c(0.1, 0.5),    # prior for process error variance, default informative igamma ~ mean 0.07, CV 0.4
+                      
+                      proc.dev.all = TRUE,   # Determines if process error deviation are estimated for all years (TRUE) or only from the point the first abundance index becomes available (FALSE)
+                      
+                      r.dist = c("lnorm","range")[2],  # prior distribution for the intrinsic rate population increas
+                      
+                      r.prior = "Very low",   # prior(mu, lod.sd) for intrinsic rate of population increase
+                      
+                      K.dist = c("lnorm","range")[2],  # prior distribution for unfished biomass  K = B0
+                      
+                      K.prior = c(max(catch$Landings.total),max(catch$Landings.total)*100), # prior(mu,CV) for the unfished biomass K = B0
+                      
+                      psi.dist= c("lnorm","beta")[1],  # prior distribution for the initial biomass depletion B[1]/K
+                      
+                      psi.prior = c(0.6,0.2),    # depletionprior(mu, CV) for the initial biomass depletion B[1]/K
+                      
+                      Plim = 0,      # Set Plim = Blim/K where recruitment may become impaired (e.g. Plim = 0.25)
+                      
+                      BmsyK = 0.5,    # Inflection point of the surplus production curve, requires Pella-Tomlinson (model = 3 | model 4)
+                      
+                      
+)
 
 # Fits JABBA model in JAGS and produce output object as list()
-jabbaFit<-fit_jabba(jbinput, # MCMC settings
+jabbaFit1<-fit_jabba(jbinput1, # MCMC settings
                     ni = 30000, # Number of iterations
                     nt = 5, # Steps saved
                     nb = 5000, # Burn-in
@@ -123,23 +122,23 @@ jabbaFit<-fit_jabba(jbinput, # MCMC settings
 
 
 #Make indiviual plots
-jbplot_catch(jabbaFit)
-jbplot_catcherror(jabbaFit)
-jbplot_ppdist(jabbaFit)
-jbplot_mcmc(jabbaFit)
-jbplot_residuals(jabbaFit)
-jbplot_cpuefits(jabbaFit)
-jbplot_runstest(jabbaFit)
-jbplot_logfits(jabbaFit)
-jbplot_procdev(jabbaFit)
+jbplot_catch(jabbaFit1)
+jbplot_catcherror(jabbaFit1)
+jbplot_ppdist(jabbaFit1)
+jbplot_mcmc(jabbaFit1)
+jbplot_residuals(jabbaFit1)
+jbplot_cpuefits(jabbaFit1)
+jbplot_runstest(jabbaFit1)
+jbplot_logfits(jabbaFit1)
+jbplot_procdev(jabbaFit1)
 
 #Status summary
-jbplot_trj(jabbaFit,type="B",add=T)
-jbplot_trj(jabbaFit,type="F",add=T)
-jbplot_trj(jabbaFit,type="BBmsy",add=T)
-jbplot_trj(jabbaFit,type="FFmsy",add=T)
-jbplot_spphase(jabbaFit,add=T)
-jbplot_kobe(jabbaFit,add=T)
+jbplot_trj(jabbaFit1,type="B",add=T)
+jbplot_trj(jabbaFit1,type="F",add=T)
+jbplot_trj(jabbaFit1,type="BBmsy",add=T)
+jbplot_trj(jabbaFit1,type="FFmsy",add=T)
+jbplot_spphase(jabbaFit1,add=T)
+jbplot_kobe(jabbaFit1,add=T)
 
 
 # Write all as png
