@@ -1,10 +1,13 @@
-# Installation
-# install.packages(devtools)
+#### STEP 1 #####
+# Download and activate the JABBA packages from https://github.com/jabbamodel/JABBA
+
+install.packages(devtools)
 library(devtools)
+
 devtools::install_github("jabbamodel/JABBA")
 library(JABBA)
 
-# required packages
+# Required packages to run the analysis
 library(gplots)
 library(coda)
 library(rjags)
@@ -13,6 +16,7 @@ library(fitdistrplus)
 library(reshape)
 library(dplyr)
 
+#### STEP 2 #####
 # Set work directories as same as this file 
 File = "C:/Users/BoudreauMA/Desktop/JABBA"
 
@@ -22,397 +26,350 @@ JABBA.file = "C:/Users/BoudreauMA/Desktop/JABBA"
 # JABBA version
 version = "v1.1"
 
-#assesment file
-assessment = "Halibut_Final"                                 # Set Assessment file: assesment folder within File that includes .csv input files
+# Set Assessment file: assessment folder within File that includes .csv input files
+assessment = "Halibut_Final"                                 
 
+# Set working directory
 output.dir = file.path(File,assessment)
 dir.create(output.dir,showWarnings = F)
 setwd(output.dir)
 
-#><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>
-# Import and set catch and cpue data files
-#><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>><>
+
+#### STEP 3 #####
+# Import and set catch, cpue and standard error data files
+
+# Missing catch years or catch values are not allowed
 catch = read.csv("C:/Users/BoudreauMA/Desktop/JABBA/catchHalibut.csv", header=TRUE, sep = ";") # catch time series, requires data.frame(year, catch)  
 catch = catch[,c(1,2)]
 
+# Missing catch years or catch values are not allowed
 cpue = read.csv("C:/Users/BoudreauMA/Desktop/JABBA/cpueHalibut.csv", header=TRUE, sep = ";")   # time series,  requires data.frame(year, cpue.1,cpue.2,...,cpue.N)
-se = read.csv("C:/Users/BoudreauMA/Desktop/JABBA/seHalibut.csv", header=TRUE, sep = ";")
-
-cpue = cpue[,c(1,13,14,16)] 
-cpue = cpue[,c(1,18)]
-cpue = cpue[,c(1,17)]
-cpue = cpue[,c(1,19)]
-cpue = cpue[,c(1,20)]
+se = read.csv("C:/Users/BoudreauMA/Desktop/JABBA/seHalibut.csv", header=TRUE, sep = ";")     # optional log standard error (CV) time series,requires data.frame(year, se.1,se.2,...,se.N)
 
 
-se = se[,c(1,17)]
-se = se[,c(1,12,14,16)] 
+###### STEP 4 #######
+# Select specific CPUE time series and the corresponding SE value
+# It is possible to run different scenarios
 
-#Scenario1 : only survey PUE
+# Scenario1 : CPUE from all data survey
 cpue = cpue[,c(1,5,6,9,10)] 
-se = se[,c(1,4)]
+se = se[,c(1,4,6,8,10)] 
 
-#Scenario2 : survey PUE85cm
+# Scenario2 : CPUE-85cm from all data survey 
 cpue = cpue[,c(1,13,14,16)] 
 se = se[,c(1,12,14,16)] 
 
-cpue$MoyMPO<-(cpue$pueMoy85.MPO.ngsl + cpue$pueMoy85.MPO.sgsl)/2
-cpue$MoyMPO<-(cpue$pueMoy.MPO.ngsl + cpue$pueMoy.MPO.sgsl)/2
-
-cpue = cpue[,c(1,4)] 
-
-cpue = cpue[,c(1,13,16)] 
-se = se[,c(1,12,16)] 
-
-cpue = cpue[,c(1,13,14)] 
-se = se[,c(1,12,14)]
-
-cpue = cpue[,c(1,14)] 
-se = se[,c(1,14)]
-
-#Scenario3 : survey PUE85cm + commercial PUE
+#Scenario3 : CPUE-85cm from all data survey + commercial CPUE
 cpue = cpue[,c(1,2,13,14,16)] 
 se = se[,c(1,12,14,16)] 
 
-#Scenario4 : only NUE data survey
+#Scenario4 : NUE from all data survey
 cpue = cpue[,c(1,3,4,7,8)] 
 
-#Scenario5 : only NUE85cm data survey
+#Scenario5 : NUE85cm from all data survey
 cpue = cpue[,c(1,11,12,15)] 
 
-#Scenario6 only mean PUE data survey
-cpue = cpue[,c(1,5,6,9,10)]
-cpue$moyPUE<-(cpue$pueMoy.MPO.ngsl+cpue$pueMoy.MPO.sgsl + cpue$pueMoy85.psm.ngsl)/3
-cpue$moyPUE.PSM<-(cpue$pueMoy.psm.ngsl+cpue$pueMoy.psm.sgsl)/2
+#Scenario6 the mean value of all CPUE-85cm data survey
 cpue = cpue[,c(1,17)]
 
 
-#Keep only CPUE or NUE data survey after a certain year
-cpue$val.PUEcomm[which(cpue$Year < 2001)] <- NA
-cpue$pueMoy.MPO.ngsl[which(cpue$Year < 1995)] <- NA
-cpue$pueMoy.MPO.sgsl[which(cpue$Year < 1995)] <- NA
-
-cpue$nueMoy.ngsl[which(cpue$Year < 2001)] <- NA
-cpue$nueMoy.sgsl[which(cpue$Year < 2001)] <- NA
-
-cpue$moyPUE[which(cpue$Year < 1998)] <- NA
-cpue$moyNUE[which(cpue$Year < 2001)] <- NA
-
-str(cpue)
-cpue$MoyPUE85.NGSL.SGSL[which(cpue$Year < 1998)] <- NA
-cpue$PUEMoy85.PSM.NGSL[which(cpue$Year < 1998)] <- NA
-cpue$PUEMoy85.PSM.SGSL[which(cpue$Year < 1998)] <- NA
-cpue$MoyPUE85.MPO.PSM[which(cpue$Year < 1990)] <- NA
-
-
+#### OPTIONAL STEP ####
+#Keep only CPUE and SE data survey which begins in a particular year
 cpue$PUEMoy85.MPO.NGSL[which(cpue$Year < 1995)] <- NA
 cpue$PUEMoy85.MPO.SGSL[which(cpue$Year < 1995)] <- NA
 cpue$PUEMoy85.PSM.NGSL[which(cpue$Year < 1995)] <- NA
-
-
-
-cpue$PUEMoy85.MPO.SGSL[which(cpue$Year < 1995)] <- NA
-cpue$PUEMoy85.MPO.NGSL[which(cpue$Year < 1995)] <- NA
-cpue$PUEMoy85.PSM.NGSL[which(cpue$Year < 1995)] <- NA
-
-cpue$MoyPUE85.MPO.PSM[which(cpue$Year < 1995)] <- NA
-se$MoyPUE85.MPO.PSM.[which(se$Year < 1995)] <- NA
-
-cpue$MoyPUE85.NGSL.SGSL[which(cpue$Year < 1995)] <- NA
-cpue$MoyPUE85.NGSL[which(cpue$Year < 1995)] <- NA
-cpue$MoyPUE85.MPO.SGSL.PSM[which(cpue$Year < 1995)] <- NA
 
 se$pueSE85.MPO.ngsl[which(se$Year < 1995)] <- NA
 se$pueSE85.MPO.sgsl[which(se$Year < 1995)] <- NA
 se$pueSE85.PSM.ngsl[which(se$Year < 1995)] <- NA
 
 
-se$pueSE85.MPO.sgsl[which(se$Year < 1990)] <- NA
-se$pueSE85.MPO.sgsl[which(se$Year < 1990)] <- NA
+#### STEP 5 ####
+#Name the scenario you want to test so the name or number appear in the output files
+Scenarios = "1"
 
-cpue$pueMoy85.MPO.ngsl[which(cpue$Year < 2000)] <- NA
-se$pueSE85.MPO.ngsl[which(se$Year < 2000)] <- NA
-
-
-#Option use mean CPUE from state-space cpue averaging
-# meanCPUE = TRUE                                       
-
-# Estimates possible range of values for B/K at the begining of the series
-test <-catch[c(21:60),]
-cmsy.bkprior(catch = catch, bw=3, prior.r = c(0.015,0.3))
-
-# Estimates possible range of values for the intrinsic rate of increase
-cmsy.rprior("Very low")
-cmsy.rprior("Low")
-
-range2prior(0,1000000)
-
-#
-  igamma = c(1,0.01) #specify inv-gamma parameters
-
-  # Process error check
-   gamma.check = 1/rgamma(1000,igamma[1],igamma[2])
-   #check mean process error + CV
-   mu.proc = sqrt(mean(gamma.check)); CV.proc =    sd(sqrt(gamma.check))/mean(sqrt(gamma.check))
-
-  # check CV
-   round(c(mu.proc,CV.proc),3)
-   quantile(sqrt(gamma.check),c(0.1,0.9))
-#}else{
-  #sigma.proc = 0.07 #IF Fixed: typicallly 0.05-0.15 (see Ono et al. 2012)
-#}
-
-# Scenario 
-Scenarios = "12"
-
-jbinput12<-build_jabba(catch = catch, cpue = cpue, se = NULL, assessment = assessment, scenario = Scenarios,
+# Creates a data list used as with JABBA input and setting to be passed to the function fit_jabba()
+jbinput1<-build_jabba(catch = catch, cpue = cpue, se = NULL, assessment = assessment, scenario = Scenarios,
                       
                       model.type = "Schaefer",  # model.type = c("Schaefer","Fox","Pella","Pella_m")
                       
-                      add.catch.CV = TRUE, # to match original assessment
+                      add.catch.CV = TRUE,  # add.catch.CV = c(TRUE,FALSE) option estimate catch with error
                       
-                      catch.cv = 0.1, # CV for catch error
+                      catch.cv = 0.1,  # catch error on log-scale (default = 0.1)
                       
-                      catch.error = c("random","under")[1], #
+                      catch.error = c("random","under")[1],  # can be random or directional under reporting "under"
                       
-                      r.dist = c("lnorm","range")[2],  # prior distribution for the intrinsic rate population increas
+                      Plim = 0,  # Set Plim = Blim/K where recruitment may become impaired (e.g. Plim = 0.25)
                       
-                      #r.prior = c("Very low"),   # prior(mu, lod.sd) for intrinsic rate of population increase
+                      ## Priors setting
+                      r.dist = c("lnorm","range")[2],  # Prior distribution for the intrinsic rate population increase
                       
-                      r.prior = c(0.05,0.2),
+                      r.prior = c(0.05,0.2), # prior(mu, lod.sd) for intrinsic rate of population increase
                       
-                      K.dist = c("lnorm","range")[1],  # prior distribution for unfished biomass  K = B0
+                      K.dist = c("lnorm","range")[1],  # Prior distribution for unfished biomass  K = B0
                       
-                      #K.prior = c(2*max(catch$Landings.total)/0.35, 12*max(catch$Landings.total)/0.05), # prior(mu,CV) for the unfished biomass K = B0
+                      K.prior = c(75000,0.75),  # Prior(mu,CV) for the unfished biomass K = B0
                       
-                      K.prior = c(275000,0.75),
+                      psi.dist= c("lnorm","beta")[1],  # Prior distribution for the initial biomass depletion B[1]/K
                       
-                      psi.dist= c("lnorm","beta")[1],  # prior distribution for the initial biomass depletion B[1]/K
+                      psi.prior = c(0.5,0.4),    # Prior(mu, CV) for the initial biomass depletion B[1]/K
                       
-                      psi.prior = c(0.5,0.4),    # depletionprior(mu, CV) for the initial biomass depletion B[1]/K
+                      b.prior = FALSE,  # Depletion prior set as b.prior = c(mean,cv,yr,type=c("bk","bbmsy","ffmsy))
                       
-                      #b.prior = c(0.4,0.17,1980,c("bk")[1]), # depletion prior set as b.prior = c(mean,cv,yr,type=c("bk","bbmsy","ffmsy))
+                      BmsyK = 0.4,  # Inflection point of the surplus production curve, requires Pella-Tomlinson (model = 3 | model 4)
                       
-                      #sets.q = rep(1,ncol(cpue)-1), # assigns catchability q to different CPUE indices. Default is each index a seperate q
+                      shape.CV = 0.3,  # CV of the shape m parameters, if estimated with Pella-Tomlinson (Model 4)
                       
-                      #sets.q = 1:(ncol(cpue)-1), # assigns catchability q to different CPUE indices. Default is each index a seperate q
+                      ## Variance options
+                      igamma = c(0.001,0.001),    # Prior for process error variance, default informative igamma ~ mean 0.07, CV 0.4
                       
-                      sigma.est = 0.05, # Estimate additional observation variance
+                      sets.q = 1:(ncol(cpue)-1), # Assigns catchability q to different CPUE indices. Default is each index a seperate q
+                      
+                      sigma.est = 0.05,  # Estimate additional observation variance
 
-                      #sets.var = rep(1,ncol(cpue)-1), # estimate individual additional variace
+                      sets.var = 1:(ncol(cpue)-1),  # Estimate individual additional variace
                       
-                      #fixed.obsE = c(0.1,0.25,0.25,0.25), # Minimum fixed observation erro
+                      fixed.obsE = c(0.25),  # Minimum fixed observation erro. You can assign different values for each CPUE --> fixed.obsE = c(0.1,0.25,0.25,0.25)
                       
-                      fixed.obsE = c(0.25),
-
                       sigma.proc = TRUE, # TRUE: Estimate observation error, else set to value
-                      
-                      igamma = c(0.001,0.001),    # prior for process error variance, default informative igamma ~ mean 0.07, CV 0.4
                       
                       proc.dev.all = TRUE, # TRUE: All year, year = starting year
                       
-                      BmsyK = 0.4,
+                      ## Other options
                       
-                      Plim = 0, # Set Plim = Blim/K where recruitment may become impaired (e.g. Plim = 0.25)
+                      # P_bound = c(0.02,1.3),  # Soft penalty bounds for b/k
+                      # sigmaobs_bound = 1, # Adds an upper bound to the observation variance
+                      # sigmaproc_bound = 0.2, # Adds an upper bound to the process variance
                       
-                      #sigmaobs_bound = 1, # Adds an upper bound to the observation variance
+                      # TAC Projections#
+                       projection = TRUE, # Switch on by Projection = TRUE 
                       
-                      #sigmaproc_bound = 0.2, # Adds an upper bound to the process variance
+                       TACs = seq(500,3000,250), # vector of fixed catches used for projections. Set range for alternative TAC projections  
+                       TACint = NULL, # Intermitted TAC to get to current year, default avg last 3 years
+                       pyrs = 10, # Set number of projections years
                       
-                      #projection = TRUE, # Switch on by Projection = TRUE 
-                      
-                      #TACs = seq(500,3000,250), # vector of fixed catches used for projections  
-                      #TACint = NULL, # default avg last 3 years
-                      #imp.yr = NULL, # default last year plus ONE
-                      #pyrs = 10, # Set number of projections years
+                      # catch.metric  "(t)" # Define catch input metric e.g. (tons) "000 t"
 )
 
 
+#### STEP 6 ####
 
 # Fits JABBA model in JAGS and produce output object as list()
-jabbaFit12<-fit_jabba(jbinput12, # MCMC settings
-                    ni = 30000, # Number of iterations
-                    nt = 5, # Steps saved
-                    nb = 5000, # Burn-in
-                    nc = 2, # number of chains
-                    init.values = FALSE, 
-                    save.all = TRUE, 
-                    save.trj = TRUE, 
-                    save.prj = FALSE, 
-                    save.jabba = TRUE, 
-                    save.csvs = TRUE,
-                    output.dir = output.dir)
+jabbaFit1<-fit_jabba(jbinput1,  # output data list from the build jabba function
+                      
+                      ## Markov chain Monte Carlo (MCMC) settings
+                      
+                      ni = 30000, # Number of iterations
+                      
+                      nt = 5, # thinning interval of saved iterations
+                      
+                      nb = 5000, # Burn-in
+                      
+                      nc = 2, # number of MCMC chains
+                      
+                      ## Initial values
+                      
+                      init.values = FALSE, # init.values = TRUE if initial values for r, k and q should be considered
+                      
+                      init.K = NULL, # Numeric value for the carrying capacity
+                      
+                      init.r = NULL, # Numeric value for intrinsic rate of increase 
+                      
+                      init.q = NULL, # Vector c(qCPUE.1,qCPUE.2,....qCPUE.N) with each q value assign to CPUE chosen
+                      
+                      ## Other options
+                      
+                      save.all = TRUE,  # add complete posteriors to fitted object
+                       
+                      save.trj = TRUE,  # adds posteriors of stock, harvest and bk trajectories
+                      
+                      save.prj = FALSE,  # adds posteriors of stock, harvest and bk projections
+                      
+                      save.jabba = TRUE,  # saves jabba fit as rdata object
+                      
+                      save.csvs = TRUE,  # option to write csv outputs
+                      
+                      output.dir = output.dir  # path to save plot. default is getwd()
+                      )
 
 
-#Make indiviual plots
-jbplot_catch(jabbaFit1)
-jbplot_catcherror(jabbaFit1)
-jbplot_ppdist(jabbaFit3)     
-jbplot_mcmc(jabbaFit1)
-jbplot_residuals(jabbaFit4)
-jbplot_cpuefits(jabbaFit4)
-jbplot_runstest(jabbaFit4)
-jbplot_logfits(jabbaFit4)
-jbplot_procdev(jabbaFit4)
-jbplot_spdyn(jabbaFit4)
+#### STEP 7 ####
 
-#Status summary
-jbplot_trj(jabbaFit4,type="B",add=T)
-jbplot_trj(jabbaFit4,type="BBmsy",add=T)
-jbplot_trj(jabbaFit4,type="FFmsy",add=T)
-jbplot_spphase(jabbaFit4,add=T)
-jbplot_kobe(jabbaFit4,add=T)
-layout(1)
+#Diagnostic plots
+jbplot_catch(jabbaFit1)  # Plot Total Catch
 
-plot(jabbaFit4$pars_posterior$r, jabbaFit4$pars_posterior$K, xlab="r posteriors", ylab="K posteriors")
-cor(jabbaFit4$pars_posterior$r, jabbaFit4$pars_posterior$K)
+jbplot_catcherror(jabbaFit1)  # Plot estimated catch + CIs
 
-jbplot_prj(jabbaFit2,type="BBmsy")
-jbplot_prj(jabbaFit2,type="BB0")
-jbplot_prj(jabbaFit2,type="FFmsy", CIs=FALSE)
-simulate()
+jbplot_ppdist(jabbaFit1)  # Plot of prior and posterior of esimated parameters: K, r, psi (depletion) and variances
 
-# Write all as png
+jbplot_mcmc(jabbaFit1)  # Plot MCMC chains of esimated parameters: K, r, m (shape), psi (depletion) and variances
+
+jbplot_cpuefits(jabbaFit1)  # Plot observed and fitted cpue indices with expexted CIs (dark grey) and posterior predictive distribution (light grey)
+
+jbplot_residuals(jabbaFit1)  # Plot residuals for all indices as boxplot with a loess showing systematic trends
+
+jbplot_stdresiduals(jabbaFit1) # Plots standardized residuals for all indices as boxplot with a loess showing systematic trends
+
+jbplot_runstest(jabbaFit1)  # Plot JABBA runs test 
+
+jbplot_logfits(jabbaFit1)  #  Plot of fitted CPUE indices on log-scale (r4ss-style)
+
+jbplot_procdev(jabbaFit1)  # Plot of process error deviation on log(biomass) showing the difference of the expected biomass and its stochastic realization
+
+jbplot_spdyn(jabbaFit1)  # Plot the production vs biomass (Walters et al 2008) and color-coded kobe phases
+
+
+#Plot choice of trajectories of Biomass, F, B/Bmsy, F/Fmsy or B/B0
+jbplot_trj(jabbaFit1,type="B",add=T)
+
+jbplot_trj(jabbaFit1,type="BBmsy",add=T)
+
+jbplot_trj(jabbaFit1,type="FFmsy",add=T)
+
+jbplot_spphase(jabbaFit1,add=T)  # plots the production function + Catch vs biomass and color-coded kobe phases
+
+jbplot_kobe(jabbaFit1,add=T)  # plots the stock status posterior over B/Bmsy and F/Fmsy
+
+
+# Plot projections 
+# jbplot_prj(jabbaFit1, type = c("BB0","BBmsy","FFmsy"), CIs=TRUE,flim=6,output.dir=output.dir,as.png=TRUE,add=FALSE,mfrow=c(1,1),width=5,height=3.5,cols=NULL)
+
+jbplot_prj(jabbaFit1,type="BBmsy")
+
+jbplot_prj(jabbaFit1,type="BB0")
+
+jbplot_prj(jabbaFit1,type="FFmsy")
+
+# Plot and estimate correlation coefficient between posterior values of r and K
+plot(jabbaFit1$pars_posterior$r, jabbaFit1$pars_posterior$K, xlab="r posteriors", ylab="K posteriors")
+cor(jabbaFit1$pars_posterior$r, jabbaFit1$pars_posterior$K)
+
+# Write all possible plots as png in the output directory
 jabba_plots(jabba=jabbaFit1,output.dir = output.dir)
-jabba_plots(jabba=jabbaFit2,output.dir = output.dir)
-jabba_plots(jabba=jabbaFit3,output.dir = output.dir)
-jabba_plots(jabba=jabbaFit4,output.dir = output.dir)
-jabba_plots(jabba=jabbaFit5,output.dir = output.dir)
-jabba_plots(jabba=jabbaFit6,output.dir = output.dir)
-jabba_plots(jabba=jabbaFit7,output.dir = output.dir)
-jabba_plots(jabba=jabbaFit8,output.dir = output.dir)
-jabba_plots(jabba=jabbaFit9,output.dir = output.dir)
-jabba_plots(jabba=jabbaFit10,output.dir = output.dir)
-jabba_plots(jabba=jabbaFit11,output.dir = output.dir)
-jabba_plots(jabba=jabbaFit12,output.dir = output.dir)
 
-#-------------------------------------------
-# Make summary plot comparing the three scenarios
-#-------------------------------------------
-jabbaFit1$scenario = "Série 1"
-jabbaFit2$scenario = "Série 2 (Référence)"
-jabbaFit3$scenario = "Série 3"
-jabbaFit4$scenario = "Série 4"
-jabbaFit5$scenario = "Série 5"
-
-
-jabbaFit6$scenario = "K moins informatif"
-jabbaFit7$scenario = "K faible"
-jabbaFit8$scenario = "K élevé"
-
-jabbaFit9$scenario = "B0/K moins informatif"
-jabbaFit10$scenario = "B0/K faible"
-jabbaFit11$scenario = "B0/K élevé"
-
-
-jabbas<-list(jabbaFit2, jabbaFit3, jabbaFit4, jabbaFit5)
-jabbas<-list(jabbaFit2, jabbaFit6, jabbaFit7, jabbaFit8)
-jabbas<-list(jabbaFit2, jabbaFit9, jabbaFit10, jabbaFit11)
-
-jbplot_summary(jabbas,type=c("B","F","BBmsy","FFmsy","BB0","SP"),
-               plotCIs=FALSE,prefix="Summary",save.summary=TRUE,output.dir=output.dir,
-               as.png=TRUE,single.plots=TRUE,width=NULL,height=NULL,Xlim=NULL,
-               cols=NULL,legend.loc = "top",legend.cex=0.8,legend.add=FALSE,plot.cex=0.8)
-
-#  Check plot with CIs
-jbplot_summary(assessment=assessment,scenarios = Scenarios, mod.path = output.dir, cols=terrain.colors(3))
-
-# and without CIs
-jbplot_summary(assessment=assessment,scenarios = Scenarios, plotCIs=FALSE)
-
-# Check Base only
-jbplot_summary(assessment=assessment,scenarios = Scenarios[1],prefix="SmryBase",as.png = F)
-
-# Save comparison 
-jbplot_summary(assessment=assessment,scenarios = Scenarios,prefix="Comp3runs",save.summary = T,as.png = T,output.dir = output.dir)
-
+#### STEP 8 ####
 #Wrapper to coduct histcasts for retrospective analysis and cross-validation
-hc1 = jabba_hindcast(jbinput1, save.hc=F, plotall=F, peels = 0:5)
-hc2 = jabba_hindcast(jbinput2, save.hc=F, plotall=F, peels = 0:5)
-hc3 = jabba_hindcast(jbinput3, save.hc=F, plotall=F, peels = 0:5)
-hc4 = jabba_hindcast(jbinput4, save.hc=F, plotall=F, peels = 0:5)
-hc5 = jabba_hindcast(jbinput5, save.hc=F, plotall=F, peels = 0:5)
-hc6 = jabba_hindcast(jbinput6, save.hc=F, plotall=F, peels = 0:5)
-hc7 = jabba_hindcast(jbinput7, save.hc=F, plotall=F, peels = 0:5)
-hc8 = jabba_hindcast(jbinput8, save.hc=F, plotall=F, peels = 0:5)
-hc9 = jabba_hindcast(jbinput9, save.hc=F, plotall=F, peels = 0:5)
-hc10 = jabba_hindcast(jbinput10, save.hc=F, plotall=F, peels = 0:5)
-hc11 = jabba_hindcast(jbinput11, save.hc=F, plotall=F, peels = 0:5)
-hc12 = jabba_hindcast(jbinput12, save.hc=F, plotall=F, peels = 0:5)
+hc1 = jabba_hindcast(jbinput,  # output data list from the build jabba function
+                     
+                     # MCMC settings
+                     ni = 30000, # Number of iterations
+                     nt = 5, # Steps saved
+                     nb = 5000, # Burn-in
+                     nc = 2, # number of chains
+                     
+                     # Initial values
+                     init.values = FALSE,
+                     init.K = NULL,
+                     init.r = NULL,
+                     init.q = NULL,# vector
+                     
+                     # Other options
+                     peels = 0:5, # retro peel option 0:number of years
+                     save.jabba = FALSE,
+                     output.dir = output.dir,
+                     save.hc = FALSE,
+                     plotall = FALSE,
+                     speedup = TRUE)
+
 
 # Retro Analysis Summary plot
-jbplot_retro(hc1,as.png = F,single.plots = F)
-jbplot_retro(hc2,as.png = F,single.plots = F)
-jbplot_retro(hc3,as.png = F,single.plots = F)
-jbplot_retro(hc4,as.png = F,single.plots = F)
-jbplot_retro(hc5,as.png = F,single.plots = F)
-jbplot_retro(hc6,as.png = F,single.plots = F)
-jbplot_retro(hc7,as.png = F,single.plots = F)
-jbplot_retro(hc8,as.png = F,single.plots = F)
-jbplot_retro(hc9,as.png = F,single.plots = F)
-jbplot_retro(hc10,as.png = F,single.plots = F)
-jbplot_retro(hc11,as.png = F,single.plots = F)
-jbplot_retro(hc12,as.png = F,single.plots = F)
+jbplot_retro(hc1, as.png = F,single.plots = F)
 
-layout(1)
 # Save plot and note Mohn's rho statistic
-mohnsrho = jbplot_retro(hc1,as.png = T,single.plots = F,output.dir = retro.dir)
+mohnsrho = jbplot_retro(hc1,as.png = T,single.plots = F,output.dir = output.dir)
 
-# Zoom-in
-mohnsrho = jbplot_retro(hc,as.png = F,single.plots = F,output.dir = retro.dir,Xlim=c(2000,2014))
-
-jbplot_hcxval(hc2,single.plots = F,as.png = F, col=rainbow(8))
+# Zoom-in 2000 to 2014 results, Xlim=c(2000,2014)
+mohnsrho = jbplot_retro(hc1,as.png = F,single.plots = F,output.dir = output.dir,Xlim=c(2000,2014))
 
 
+#Plots and summarizes results from one step head hindcast cross-validation using the output form jabba_hindcast
+jbplot_hcxval(hc1,single.plots = F,as.png = F, col=rainbow(8))
 
-##Spict#
-library(spict)
+jbplot_hcxval(hc1,  # hc output object from jabba_hindcast
+              
+              index=NULL,  # option to plot specific indices (numeric & in order)
+             
+              output.dir=getwd(),  # directory to save plots
+             
+              as.png=FALSE,  # save as png file of TRUE
+              
+              single.plots=FALSE,  # if TRUE plot invidual fits else make multiplo
+              
+              add=FALSE,  # if TRUE plots par is only called for first plot
+             
+              width=NULL,  # plot width
+             
+              height=NULL,  # plot hight
+             
+              minyr=NULL,  # minimum year shown in plot
+             
+              cols=NULL,  # option to add colour palette
+             
+              legend.loc="topright",  # location of legend
+             
+              legend.cex=0.8,  # size of legend
+             
+              legend.add=TRUE,  # show legend
+             
+              label.add=TRUE)  # index name and MASE
 
-pol$halibut=list(obsC=catch$Gestion, timeC=catch$Year,obsI=cpue$MoyPUE85.MPO.PSM, timeI=cpue$MoyPUE85.MPO.PSM)
-check.inp(pol$halibut)
-plotspict.data(pol$halibut)
-plotspict.ci(pol$halibut)
-inp <- pol$halibut
-list.possible.priors()
+#### STEP 9 ####
+#Compares B, F, BBmsy, FFmsy, BB0 and SP for various model scanarios that have to be saved as rdata
+jabbaFit1$scenario = "Série 1 (Référence)"
 
-#r.mu= log(0.3)
-#r.sd= 0.5
-#plot(density(rlnorm(10000,r.mu,r.sd)))
-#abline (v=0.3)
-#abline (v=0.6)
-#abline (v=0.1)
+jabbaFit2$scenario = "K moins informatif"
+jabbaFit3$scenario = "K faible"
+jabbaFit4$scenario = "K élevé"
 
-# ##priors
-#rprior
-r.mu=log(0.08)
-r.sd=.7
-plot(density(rlnorm(10000,r.mu,r.sd)))
-inp$priors$logr <- c(r.mu,r.sd,1)
+jabbaFit5$scenario = "B0/K moins informatif"
+jabbaFit6$scenario = "B0/K faible"
+jabbaFit7$scenario = "B0/K élevé"
 
-#kprior
-k.mu=log(500000)
-k.mu=log(20000000)
-k.sd=200000
-curve(dnorm(x,exp(k.mu),k.sd),0,exp(k.mu)*2)
-inp$priors$logK <- c(k.mu,k.sd,1)
+jabbas<-list(jabbaFit1, jabbaFit2, jabbaFit3, jabbaFit4)
+jabbas<-list(jabbaFit1, jabbaFit5, jabbaFit6, jabbaFit7)
 
-#qprior
-q.mu=log(.1)
-q.sd=.8
-curve(dnorm(x,exp(q.mu),q.sd),max(0,exp(q.mu)-3*q.sd),exp(q.mu)+3*q.sd)
-inp$priors$logq <- c(q.mu,q.sd, 0)
+jbplot_summary(jabbas, # list() of JABBA model 1:n
+                
+               type=c("B","F","BBmsy","FFmsy","BB0","SP"),  # type for single plots optional select type=c("B","F","BBmsy","FFmsy","BB0","SP")
+               
+               plotCIs=TRUE,  # Plot Credibilty Interval
+               
+               prefix="Summary",  # Plot name specifier
+               
+               save.summary=TRUE,  # option to save a summary of all loaded model runs
+               
+               output.dir=output.dir,  # directory to save plots
+               
+               as.png=TRUE,  # save as png file of TRUE
+               
+               single.plots=TRUE,  # if TRUE plot invidual fits else make multiplot
+               
+               width=NULL,  # plot width
+               
+               height=NULL, # plot hight
+               
+               Xlim=NULL, # allows to "zoom-in" requires speficiation Xlim=c(first.yr,last.yr)
+               
+               cols=NULL,  # option to add colour palette
+               
+               legend.loc = "top",  # location of legend
+               
+               legend.cex=0.8,  # size of legend
+               
+               legend.add=FALSE, # show legend
+               
+               plot.cex=0.8  # cex setting in par()
+               )
 
-inp$priors$logq<-NULL
+#  Check plot with CIs
+jbplot_summary(assessment=assessment,scenarios = jabbas, mod.path = output.dir, cols=terrain.colors(3))
 
-capelin.fit <- fit.spict(inp)
-summary(capelin.fit)
-plot(capelin.fit)
+# and without CIs
+jbplot_summary(assessment=assessment,scenarios = jabbas, plotCIs=FALSE)
 
-par(old.par)
-plotspict.priors(capelin.fit,do.plot=3)
-plotspict.biomass(capelin.fit)
-plotspict.fb(capelin.fit,rel.axes=T)
-plotspict.bbmsy(capelin.fit)
-plotspict.ffmsy(capelin.fit, qlegend=FALSE)
-plotspict.catch(capelin.fit, qlegend=FALSE)
-calc.osa.resid(capelin.fit)
+# Check Base only
+jbplot_summary(assessment=assessment,scenarios = jabbas[1],prefix="SmryBase",as.png = F)
+
+# Save comparison 
+jbplot_summary(assessment=assessment,scenarios = jabbas,prefix="Comp3runs",save.summary = T,as.png = T,output.dir = output.dir)
+
