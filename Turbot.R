@@ -12,16 +12,16 @@ turbot<-read.csv("C:/Users/BoudreauMA/Desktop/C-68/Data-limited method/Data/turb
 turbot$Land.tons<-turbot$Landings*1000
 turbot$Index.tons<-turbot$Index*1000
 
-
+#Use the GetPopIndices function to get PUE and NUE data from Teleost summer survey
+pop.ind<-GetPopIndices(dirIN="C:/Users/BoudreauMA/Desktop/Analyse/Data/Donnees_PACES/",sp=c(892),extrants = c("set","catch","carbio","stratum"), ans=1990:2019, strates_init = NULL)
 PUE<-as.data.frame(pop.ind$pue)
 NUE<-as.data.frame(pop.ind$nue)
 Annee<-row.names(PUE)
 PUE$Annee<-as.numeric(Annee)
 NUE$Annee<-as.numeric(Annee)
 
-
-# plot biomass index and langings on the same graph
-plot.Landings.Index<-ggplot(turbot) +
+# plot biomass index and landings on the same graph
+plot.Landings.Index<-ggplot2::ggplot(turbot) +
   geom_bar(aes(y=Land.tons, x=Year), position = "stack", stat="identity", fill="darkgreen", color="Black") +
   geom_point(aes(y=Index.tons, x=Year), color="Blue", size=3) +
   geom_line(aes(y=Index.tons, x=Year), color="Blue", size=1.25) +
@@ -97,7 +97,7 @@ plot.FMSY
 
 ##### Recent and historic trend in standardized abundance index ####
 
-#Visualise available standardized CPUE time series (abundance survey or commercial fishery)
+#Visualize available standardized CPUE time series (abundance survey or commercial fishery)
 plot.CPUE<-ggplot(PUE, aes(x=Annee, y=moy)) +
   geom_point(color="blue", size=3) +
   geom_line(color="blue", size=1.25) +
@@ -109,7 +109,7 @@ plot.CPUE<-ggplot(PUE, aes(x=Annee, y=moy)) +
 
 plot.CPUE
 
-# Rencent trend in CPUE from abundance survey in last 5 years
+# Recent trend in CPUE from abundance survey in last 5 years
 RecYearPUE<-subset(PUE, Annee >= max(PUE$Annee)-4) #Get N recent number of year, often 5 to 10 
 
 plot.RecentTrend<-ggplot(RecYearPUE, aes(x=Annee, y=moy)) +
