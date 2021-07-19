@@ -20,7 +20,7 @@ lengthYear_data<-length_data %>% group_by(Year,Length) %>%
   as.data.frame()
 
 # Life history parameters (M, F, N)
-Lmax=61
+Lmax=62
 Lmat=23
 Linf <- exp(0.044 + 0.9841*log(Lmax))
 Lopt <- 2/3*Linf   ## Assuming natural mortality and VBF k parameter follow a relationship :  M/k = 1.5
