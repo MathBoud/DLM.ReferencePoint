@@ -1,17 +1,28 @@
-rm(list=ls())
+### Mean length-based mortality estimator (MLZ) ###
+# Developed by Gedamke T. & Hoenig J.M in 2011 (https://afspubs.onlinelibrary.wiley.com/doi/full/10.1577/T05-153.1)
 
-# Activate required packages#
+# Uses a maximum likelihood approach to determine the year and total mortality (Z)   #
+# values that make the mean lengths predicted by an unbalanced Beverton-Holt equation #
+# best match a time series of lengths in the fishery                                  #
+
+
+#####################################################################################
+### Example With NAFO 4T-American plaice length composition in commercial fishery ###
+#####################################################################################
+
+rm(list=ls())
+layout(1)
+
+# Load require packages
 library(dplyr)
 library(reshape2)
 
-# Import length composition data
+# Load length frequency data PliCanFreq.Long.Comm.91_2010.csv from data folder on the github repository https://github.com/MathBoud/C68/data 
 length_data <- read.csv("C:/Users/BoudreauMA/Desktop/Analyse/Data/PliCanFreq.Long.Comm.91_2010.csv", sep = ",")
 str(length_data)
 
 # Rename columns to have Year and Length 
-length_data <- length_data %>% 
-               dplyr::rename(Length = Class_long, Year = Annee) %>% 
-  as.data.frame()
+length_data <- length_data %>% dplyr::rename(Length = Class_long, Year = Annee) %>% as.data.frame()
 
 # Create a matrix with Year as rows and Length as columns
 # Values for each Year-Length association represents the nb of individuals of this size caught in a certain year
@@ -25,9 +36,13 @@ library(MLZ)
 # Length data are imported as either a data frame of individual records or as a matrix (years x length bins)
 # Look ?MLZ_data to correctly enter the length data base
 ?MLZ_data
-new.dataset<-new("MLZ_data", Year = unique(length_data$Year), 
-                 Len_matrix= Lcomp.mat, length.units = "cm",
-                 vbLinf = 75.8, vbK = 0.066, Lc = 21.7)
+new.dataset<-new("MLZ_data", 
+                 Year = unique(length_data$Year),       # Vector of year
+                 Len_matrix= Lcomp.mat,                 # Length frequency matrix
+                 length.units = "cm",                   # Length units ("cm" or "mm")
+                 vbLinf = 75.8,                         # Von Bertalanffy Asymptotic length parameter 
+                 vbK = 0.066,                           # Von Bertalanffy K parameter
+                 Lc = 21.7)                             # Length at full selection
 
 # The plot function can be used to visualize the data to aid in the selection of Lc
 plot(new.dataset, type = "comp")
@@ -57,11 +72,9 @@ for (i in unique(length_data$Year)) {
 new.dataset@MeanLength <- Lmean$MeanL
 new.dataset@ss <- length(new.dataset@MeanLength)
 
-
 # Once mean lengths > Lc are calculated, mortality can be estimated using the ML function
 # The function returns an object of class MLZ_model which includes predicted values of the data, 
 # parameter estimates with correlation matrix and gradient vector.
-
 ?ML
 est <- ML(new.dataset, ncp = 2)
 
@@ -79,7 +92,7 @@ model3 <- ML(new.dataset, ncp = 2)
 # The compare_models function allow to compare model runs AIC and produces a plot of the predicted data.
 compare_models(model1, model2, model3)
 
-# Estimag
+# Estimating modal length time series
 Lmod <- NULL
 
 for (i in unique(length_data$Year)) {

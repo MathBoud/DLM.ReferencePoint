@@ -1,20 +1,29 @@
-## Length-converted catch-curve for American plaice ##
-# https://rdrr.io/cran/TropFishR/man/catchCurve.html 
+### Length-Converted Catch-Curve (LCCC) ###
+# Developed by Pauly D. in 1990 (http://pubs.iclarm.net/Naga/FB_1365.pdf)
 
-# Dowload length frequency data file
-length_data <- read.csv("C:/Users/BoudreauMA/Desktop/Analyse/Data/PliCanFreq.Long.Comm.91_2010.csv", sep = ",")
+# This function applies the (length-converted) linearised catch curve to age composition and             #
+# length-frequency data, respectively. It allows to estimate the instantaneous total mortality rate (Z). #
+# Optionally, the gear selectivity can be estimated and the cumulative catch curve can be applied.       #
 
+
+#####################################################################################
+### Example With NAFO 4T-American plaice length composition in commercial fishery ###
+#####################################################################################
+
+rm(list=ls())
+layout(1)
+
+# Load require packages
 library(dplyr)
-length_data<-length_data %>% 
-  dplyr::rename(Length = Class_long,
-                Year = Annee)
-
-
-# Download and activate TropFishR packages
 library(TropFishR)
 
-# Run Length-Converted Catch-Curve method for a single year
+# Load Numbers-at-length per year (PliCanFreq.Long.Comm.91_2010.csv) from data folder on the github repository https://github.com/MathBoud/C68/data 
+length_data <- read.csv("C:/Users/BoudreauMA/Desktop/Analyse/Data/PliCanFreq.Long.Comm.91_2010.csv", sep = ",")
 
+# Rename columns data frame to have Year and Length
+length_data<-length_data %>% dplyr::rename(Length = Class_long, Year = Annee)
+
+# Run Length-Converted Catch-Curve method for a single year
 data.set1 <- subset(length_data, Year == 1991)  # With 1998 length composition data
 
 # Run Catch-curve function with cumulative catch curve applied
@@ -60,10 +69,9 @@ summary(output$linear_mod)
 # With multiple year dataset
 ?catchCurve
 
-yearSubs <- subset(length_data, Year > 1990 & Year < 2000)
+yearSubs <- subset(length_data, Year > 1990 & Year < 1996)
 
-
-for (i in yearSubs$Year) {
+for (i in unique(yearSubs$Year)) {
   
   data.set1 <- subset(yearSubs, Year == i) 
   
@@ -76,7 +84,7 @@ for (i in yearSubs$Year) {
                    catch_columns = NA, # numerical; indicating the column of the catch matrix which should be used for the analysis
                    cumulative = TRUE, # logical; if TRUE the cumulative catch curve is applied (Jones and van Zalinge method)
                    calc_ogive = FALSE, # logical; if TRUE the selection ogive is additionally calculated from the catch curve (only if cumulative = FALSE)
-                   reg_int = c(4,20), # instead of using the identity method a range can be determined, which is to be used for the regression analysis. If equal to NULL identity method is applied (default).
+                   reg_int = c(4,30), # instead of using the identity method a range can be determined, which is to be used for the regression analysis. If equal to NULL identity method is applied (default).
                    reg_num = 1, # integer indicating how many separate regression lines should be applied to the data. Default 1.
                    auto = FALSE, # logical; no interactive functions used instead regression line is chosen automatically. Default = FALSE
                    plot = TRUE) # logical; should a plot be displayed? Default = TRUE

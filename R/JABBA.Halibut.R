@@ -36,13 +36,14 @@ setwd(output.dir)
 
 
 #### STEP 3 #####
-# Import and set catch, cpue and standard error data files
-
+# Load and set catch, cpue and standard error data files
 # Missing catch years or catch values are not allowed
+
+# Load catch (catchHalibut.csv), cpue (cpueHalibut.csv) and standard error (seHalibut.csv) files from the data folder on the github repository https://github.com/MathBoud/C68/data 
 catch = read.csv("C:/Users/BoudreauMA/Desktop/JABBA/catchHalibut.csv", header=TRUE, sep = ";") # catch time series, requires data.frame(year, catch)  
 catch = catch[,c(1,2)]
 
-# Missing catch years or catch values are not allowed
+# Missing CPUE years or CPUE values are allowed
 cpue = read.csv("C:/Users/BoudreauMA/Desktop/JABBA/cpueHalibut.csv", header=TRUE, sep = ";")   # time series,  requires data.frame(year, cpue.1,cpue.2,...,cpue.N)
 se = read.csv("C:/Users/BoudreauMA/Desktop/JABBA/seHalibut.csv", header=TRUE, sep = ";")     # optional log standard error (CV) time series,requires data.frame(year, se.1,se.2,...,se.N)
 

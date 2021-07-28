@@ -1,5 +1,5 @@
-### Length-based Bayesian Biomass estimator (LIME) for data-limited stock assessment###
-# Developed by Froese, R., Winker, H., Coro, G., Demirel, N., Tsikliras, A.C., Dimarchopoulou, D., Scarcella, G., Probst, W.N., Dureuil, M. and Pauly, D.
+### The length-based integrated mixed effects (LIME) for data-limited stock assessment###
+# Developed by Rudd, M.B. and Thorson, J.T. in 2017. (Source: https://cdnsciencepub.com/doi/10.1139/cjfas-2017-0143)
 
 # The length-based integrated mixed effects (LIME) model uses length data and biological information to estimate stock status. 
 # Key attributes of LIME include: - Accounting for time-varying fishing mortality and recruitment
@@ -9,9 +9,7 @@
 # Fitting to multiple years of length composition data and/or catch and/or an abundance index time series, if available.
 # Estimation of spawning potential ratio reference points (and MSY-based reference points if there is information on scale, e.g. catch data)
 
-# To install LIME go to https://github.com/merrillrudd/LIME 
-#devtools::install_github("merrillrudd/LIME", build_vignettes=TRUE)
-
+## User guide available at https://github.com/merrillrudd/LIME ##
 
 #####################################################################
 ### Example With NAFO 3LNO-American plaice life history parameter ###

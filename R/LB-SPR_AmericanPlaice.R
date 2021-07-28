@@ -1,11 +1,42 @@
-# Import length frequency data set
+### Length-based spawning potential ratio (LB-SPR) for data-limited stock assessment ###
+# Developed by Hordyk, A.R., Ono, K., Valencia, S.R., Loneragan, N.R., and Prince, J.D. in 2014 (https://www.researchgate.net/publication/260192690_A_novel_length-based_empirical_estimation_method_of_spawning_potential_ratio_SPR_and_tests_of_its_performance_for_small-scale_data-poor_fisheries)
+
+# The LBSPR package contains functions to run the Length-Based Spawning Potential Ratio (LBSPR) method.            #
+# The LBSPR package can be used in two ways:                                                                       #
+# 1) simulating the expected length composition, growth curve, and SPR and yield curves using the LBSPR model and  #
+# 2) fitting to empirical length data to provide an estimate of the spawning potential ratio (SPR).                #
+# The LBSPR method has been developed for data-limited fisheries, where few data are available                     # 
+# other than a representative sample of the size structure of the vulnerable portion                               #
+# of the population (e.g., the catch) and an understanding of the life history of the species.                     # 
+
+# User guide available at https://cran.r-project.org/web/packages/LBSPR/vignettes/LBSPR.html ##
+
+
+####################################################################################
+### Example With NAFO 4T-American plaice length frequency data from 1991 to 2000 ###
+####################################################################################
+
+rm(list=ls())
+layout(1)
+
+# Install packages LBSPR (https://cran.r-project.org/web/packages/LBSPR/vignettes/LBSPR.html)
+install.packages("LBSPR")
+
+# Activate required packages
+library(LBSPR)
 library(dplyr)
+library(reshape2)
+
+# Load length frequency data PliCanFreq.Long.Comm.91_2010.csv from data folder on the github repository https://github.com/MathBoud/C68/data 
 length_data <- read.csv("C:/Users/BoudreauMA/Desktop/Analyse/Data/PliCanFreq.Long.Comm.91_2010.csv", sep = ",")
 
+# Rename column to have Length and Year
 length_data<-length_data %>% 
   rename(Length = Class_long,
          Year = Annee)
 
+# If you want to test a different combination of years
+length_data <- subset (length_data, Year %in% 1991:2000)
 length_data<-length_data[,c(2,4,5)]
 
 min(length_data$Length) # Minimum length = 13 cm
@@ -14,7 +45,7 @@ max(length_data$Length) # Maximum length = 62 cm
 plot(length_data$Length, length_data$n.tot)
 
 # Add a column to length data frame that identifies the length class of the each individual length
-# In exemple, length bind of 5 cm from 0 cm to 80 cm
+# In example, length bind of 5 cm from 0 cm to 80 cm
 length_data$Mid.Length.Class<-with(length_data,
                                    ifelse(Length > 0 & Length <= 5, 2.5,
                                    ifelse(Length > 5 & Length <= 10, 7.5,
@@ -35,7 +66,7 @@ length_data$Mid.Length.Class<-with(length_data,
 
 # Create a data frame with Year, Mid Class length and number of individual (number) in each class 
 lengthYear_data<-length_data %>% group_by(Year,Mid.Length.Class) %>%
-  summarize(number=sum(n.tot, na.rm=TRUE)) %>%
+  dplyr::summarize(number=sum(n.tot, na.rm=TRUE)) %>%
   as.data.frame()
 
 # Create vectors of mid length class and Year
@@ -68,12 +99,6 @@ for (i in unique(df1$Year)) {
 
 }
 
-# Install packages LBSPR (https://cran.r-project.org/web/packages/LBSPR/vignettes/LBSPR.html)
-install.packages("LBSPR")
-
-# Activate LBSPR
-library(LBSPR)
-
 # Two objects (LB_pars & LB_lengths) are required to fit the LBSPR model to length data. 
 # LB_pars = life history parameters ; LB_lengths = Length frequency data
 
@@ -85,8 +110,7 @@ slotNames(MyPars)
 class?LB_pars
 
 # The minimum parameters needed for the simulation model are Linf, MK, L50, L95, SL50, SL95, FM or SPR, BinWidth 
-
-MyPars@Species <- "Amercian Plaice"  # Character vector of species name
+MyPars@Species <- "Hippoglossoides platessoides"  # Character vector of species name
 
 MyPars@Linf <- 75.8   # A length-one numeric vector for von Bertalanffy asymptotic length
 
@@ -94,7 +118,7 @@ MyPars@L50 <- 37     # A length-one numeric vector for length at 50% maturity
 
 MyPars@L95 <- 47     # A length-one numeric vector for length at 95% maturity
 
-MyPars@MK <- 1     # A length-one numeric vector for M/K ratio (natural mortality divided by von Bertalanffy K coefficient)
+MyPars@MK <- 1.5     # A length-one numeric vector for M/K ratio (natural mortality divided by von Bertalanffy K coefficient)
 
 #MyPars@M <-0.2      # An optional value for natural mortality (M)
 
@@ -102,11 +126,11 @@ MyPars@L_units <- "cm" # Character describing units of length parameters
 
 MyPars@CVLinf <- 0.117   # A length-one numeric vector for CV of length-at-age
 
-MyPars@SL50 <- 21.9  # A length-one numeric vector for length at 50% selectivity
+MyPars@SL50 <- 31  # A length-one numeric vector for length at 50% selectivity
 
 MyPars@SL95 <- 35 # A length-one numeric vector for length at 95% selectivity
 
-MyPars@FM <- 0.65  # A length-one numeric vector for F/M ratio (note this is apical F)
+MyPars@FM <- 2  # A length-one numeric vector for F/M ratio (note this is apical F)
 
 MyPars@BinWidth <- 5  # A length-one numeric vector for width of length bins
 
@@ -140,16 +164,12 @@ MyPars@BinWidth <- 5  # A length-one numeric vector for width of length bins
 # Create length data files #
 
 MyLengths <- new("LB_lengths")
-
 slotNames(MyLengths)
-
 class(MyLengths)
 
 MyLengths@LMids = seq(from=2.5,to=77.5,by=5)
 MyLengths@Years <- as.vector(unique(lengthYear_data$Year))
 MyLengths@NYears <- length(MyLengths@Years)
-
-library(reshape2)
 MyLengths@LData <- acast(Lcomp.data, Mid.Length.Class~Year, value.var="number")
 
 plotSize(MyLengths)

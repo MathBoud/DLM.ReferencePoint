@@ -1,5 +1,5 @@
-### Length-based Bayesian Biomass estimator (LIME) for data-limited stock assessment###
-# Developed by Froese, R., Winker, H., Coro, G., Demirel, N., Tsikliras, A.C., Dimarchopoulou, D., Scarcella, G., Probst, W.N., Dureuil, M. and Pauly, D.
+### The length-based integrated mixed effects (LIME) for data-limited stock assessment###
+# Developed by Rudd, M.B. and Thorson, J.T. in 2017. (Source: https://cdnsciencepub.com/doi/10.1139/cjfas-2017-0143)
 
 # The length-based integrated mixed effects (LIME) model uses length data and biological information to estimate stock status. 
 # Key attributes of LIME include: - Accounting for time-varying fishing mortality and recruitment
@@ -9,9 +9,7 @@
 # Fitting to multiple years of length composition data and/or catch and/or an abundance index time series, if available.
 # Estimation of spawning potential ratio reference points (and MSY-based reference points if there is information on scale, e.g. catch data)
 
-# To install LIME go to https://github.com/merrillrudd/LIME 
-#devtools::install_github("merrillrudd/LIME", build_vignettes=TRUE)
-
+## User guide available at https://github.com/merrillrudd/LIME ##
 
 ####################################################################################
 ### Example With NAFO 4T-American plaice length frequency data from 1991 to 2010 ###
@@ -106,7 +104,7 @@ legend("topright", legend=lh$ages[seq(2,length(lh$ages),by=3)], col=col_vec[seq(
 
 # length frequency data can be annual or by month and LIME has a parameter (nseasons) to account for that
 # In this case, the data represent annual dockside sampling length composition in NAFO 4T
-# Import length frequency data PliCanFreq.Long.Comm.91_2010 from data folder on the github repository https://github.com/MathBoud/C68 
+# Load length frequency data PliCanFreq.Long.Comm.91_2010.csv from data folder on the github repository https://github.com/MathBoud/C68/data 
 length_data <- read.csv("C:/Users/BoudreauMA/Desktop/Analyse/Data/PliCanFreq.Long.Comm.91_2010.csv", sep = ",")
 
 length_data <- length_data  %>% dplyr::rename(Length.Class = Class_long, Year = Annee)
@@ -270,7 +268,7 @@ plot_output(Inputs=Inputs,
 
 # To have a better fit of the LIME model, add catch data series to the analysis
 #### Run LIME with length frequency and catch data ####
-# Import catch data 
+# Load catch data PliCan.Landings.1985_2019.csv from data folder on the github repository https://github.com/MathBoud/C68/data 
 catch_data <- read.csv("C:/Users/BoudreauMA/Desktop/Analyse/Data/PliCan/PliCan.Landings.1985_2019.csv", sep = ",")
 str(catch_data)
 
@@ -334,7 +332,7 @@ plot_output(Inputs=Inputs,
 
 # To have a better fit of the LIME model, add catch data series AND biomass survey index to the analysis
 #### Run LIME with length frequency, catch and survey index data ####
-# Import survey data
+# Load catch data PliCan.BiomassSurvey.csv from data folder on the github repository https://github.com/MathBoud/C68/data 
 index_data <- read.csv("C:/Users/BoudreauMA/Desktop/Analyse/Data/PliCan/PliCan.BiomassSurvey.csv", sep = ",")
 
 index_data <- subset (index_data, Year %in% 1993:2006) 

@@ -9,13 +9,13 @@
 # User guide available at https://github.com/SISTA16/LBB/blob/master/LBB_UserGuide.docx ##
 
 
-###############################################################################
+####################################################################################
 ### Example With NAFO 4T-American plaice length frequency data from 1991 to 2006 ###
-###############################################################################
+####################################################################################
 
 rm(list=ls())
 
-#### Import required packages and load the data ####
+#### Activate required packages and load the data ####
 library(dplyr)
 library(TropFishR)
 library(R2jags)
@@ -28,7 +28,7 @@ library(crayon)
 #### Create dat.raw data frame from length composition in fishery #### 
 # with Year, Length, CatchNo and Stock as columns ###
 
-# Import length frequency data with year, length and count column
+# Load length frequency data with year, length and count column
 length_data <- read.csv("C:/Users/BoudreauMA/Desktop/Analyse/Data/PliCanFreq.Long.Comm.91_2010.csv", sep = ",")
 
 # Rename column to have Year, Length in mm and CatchNo (a certain length catch number) and use the 1991 to 2006 annual length frequency data
@@ -52,10 +52,10 @@ dat.ID<-data.frame(
 File="dat.raw.csv",                        # The name of data file in csv format (e.g. "My_Dat_1.csv")
 Species = "Hippoglossoides platessoides",  # the scientific name of the species
 Stock = Stock,
-StartYear = NA,                          # the first year with LF data to be used
-EndYear = NA,                            # the last year with LF data to be used
+StartYear = NA,                            # the first year with LF data to be used
+EndYear = NA,                              # the last year with LF data to be used
 Years.user = NA  ,                         # a string of years to be analyzed, e.g. 2000,2002,2004 with no space and only comma between years
-Year.select = NA,                         # a year for which you want B/B0 with confidence limits to be printed in the console, and which you want to be shown in the graphical output
+Year.select = NA,                          # a year for which you want B/B0 with confidence limits to be printed in the console, and which you want to be shown in the graphical output
 Gears.user = NA,                           # Gears to be analyzed, e.g. "trawl1,LL2,trap3" without space between commas
 Lcut.user = NA,                            # lower threshold for length data. Data will be restricted to those L >= Lcut.user (in cm)
 Lc.user = NA,                              # user-specified prior for length at 50% first capture, e.g. 27 in cm
