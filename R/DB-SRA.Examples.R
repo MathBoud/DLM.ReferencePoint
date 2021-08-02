@@ -57,8 +57,8 @@ DLMobject@vbLinf <- 90                              #  VB maximum length
 DLMobject@Mort <- 0.2                               #  Natural mortality rate
 DLMobject@Abun <- FALSE                             #  Current abundance
 DLMobject@FMSY_M <- 0.87                            #  Ratio of FMSY/M
-DLMobject@L50 <- 36                                 #  Length at 50% maturity
-DLMobject@L95 <- FALSE                              #  Length at 95% maturity
+DLMobject@L50 <- 46                                 #  Length at 50% maturity
+DLMobject@L95 <- 55                                 #  Length at 95% maturity
 DLMobject@MaxAge <- 50                              #  Maximum age. Vector nsim long. Positive integer
 DLMobject@BMSY_B0 <- 0.4                            #  BMSY relative to unfished
 DLMobject@LHYear <- 2019
@@ -161,7 +161,7 @@ DLMobject@vbLinf <- 205                                              #  VB maxim
 DLMobject@Mort <- 0.4                                                #  Natural mortality rate
 DLMobject@Abun <- FALSE                                              #  Current abundance
 DLMobject@FMSY_M <- 0.75                                             #  Ratio of FMSY/M
-DLMobject@L50 <- 24.5                                                #  Length at 50% maturity
+DLMobject@L50 <- 20                                                #  Length at 50% maturity
 DLMobject@L95 <- FALSE                                               #  Length at 95% maturity
 DLMobject@MaxAge <- FALSE                                            #  Maximum age. Vector nsim long. Positive integer
 DLMobject@BMSY_B0 <- 0.5                                             #  BMSY relative to unfished
