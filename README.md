@@ -123,7 +123,7 @@ Source : FAO. 2001. (http://www.fao.org/3/Y1455E/Y1455E.htm)
 Use a linear regression line to obtain recent (last 10 years) and historical (all years) trends observed in commercial fishery data (landings, CPUE) and abundance surveys (CPUE, recruitment, biomass)
 
 ### Simple Stock Synthesis (SimpleStockSynthesis.Example.R)
-Source Cope, J. 2013. (https://www.researchgate.net/publication/256998431_Implementing_a_statistical_catch-at-age_model_Stock_Synthesis_as_a_tool_for_deriving_overfishing_limits_in_data-limited_situations)
+Source: Cope, J. 2013. (https://www.researchgate.net/publication/256998431_Implementing_a_statistical_catch-at-age_model_Stock_Synthesis_as_a_tool_for_deriving_overfishing_limits_in_data-limited_situations)
 
 SSS function available in the MSEtool package & GitHub SSS package code development available at https://github.com/shcaba/SSS
 
