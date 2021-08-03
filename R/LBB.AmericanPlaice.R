@@ -1,5 +1,5 @@
 ### Length-based Bayesian Biomass estimator (LBB) for data-limited stock assessment###
-# Developed by Froese, R., Winker, H., Coro, G., Demirel, N., Tsikliras, A.C., Dimarchopoulou, D., Scarcella, G., Probst, W.N., Dureuil, M. and Pauly, D.
+# Developed by Froese, R., Winker, H., Coro, G., Demirel, N., Tsikliras, A.C., Dimarchopoulou, D., Scarcella, G., Probst, W.N., Dureuil, M. and Pauly, D. in 2018 (Source : https://academic.oup.com/icesjms/article-abstract/75/6/2004/5051296/)
 
 # LBB works for species that grow throughout their lives, such as most fish and invertebrates,         #
 # and requires no input apart from length frequency data. It estimates asymptotic length (Linf),       #

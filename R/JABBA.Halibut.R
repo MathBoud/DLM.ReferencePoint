@@ -1,3 +1,16 @@
+### Just Another Bayesian Biomass Assessment ###
+# Developed by Winker, H., Carvalho, F. et Kapur, M. in 2018 (https://www.sciencedirect.com/science/article/pii/S0165783618300845)
+# GitHub code development available at https://github.com/jabbamodel/JABBA
+
+# The method tries to fit a generalized space-state model of surplus biomass production to obtain  #
+# reproducible values of stock status determined by a Bayesian Monte-Carlo method by Markov chains #
+
+#####################################################################################
+### Example With NAFO 4T-American plaice length composition in commercial fishery ###
+#####################################################################################
+
+rm(list=ls())
+
 #### STEP 1 #####
 # Download and activate the JABBA packages from https://github.com/jabbamodel/JABBA
 

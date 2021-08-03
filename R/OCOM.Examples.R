@@ -4,11 +4,7 @@
 # The "optimized catch-only model" (OCOM) developed by Zhou et al. 2017 employs a stock reduction analysis (SRA) using priors for r and    #
 # stock depletion derived from natural mortality and saturation estimated using the Zhou-BRT method, respectively. The SRA employs a       #
 # Schaefer biomass dynamics model and an algorithm for identifying feasible parameter combinations to estimate biomass, fishing mortality, #
-# and stock status (B/BMSY, F/FMSY) time series and biological/management quantities (i.e., r, K, MSY, BMSY, FMSY).                        #
-
-# Estimates biomass, fishing mortality, and stock status (B/BMSY, F/FMSY) time series and                 #
-# biological/management quantities (i.e., r, k, MSY, BMSY, FMSY) from a time series of catch              # 
-# and a natural mortality (M) estimate using the optimized catch-only model (OCOM) from Zhou et al. 2017. #
+# and stock status (B/BMSY, F/FMSY) time series and biological/management quantities (i.e., r, K, MSY, BMSY, FMSY).                        #                                                   #
 
 #########################################################
 ### Example With NAFO 4RST Greenland halibut landings ###

@@ -1,5 +1,5 @@
-### Catch Ratio (c/Cmax) ###
-# Developed by Anderson C.A, Branch, T.A., Ricard, D. & Lotze, H.K. (http://lotzelab.biology.dal.ca/wp-content/uploads/2015/11/Anderson-etal_2012_ICES1.pdf)
+### Catch Ratio (C/Cmax) ###
+# Developed by Anderson C.A, Branch, T.A., Ricard, D. & Lotze, H.K. in 2012 (http://lotzelab.biology.dal.ca/wp-content/uploads/2015/11/Anderson-etal_2012_ICES1.pdf)
 
 # Applies a smoothing factor to the commercial catch data to estimate a ratio proportional to the  #
 # maximum value of the catch and to determine a qualitative state of the stock based on this ratio #

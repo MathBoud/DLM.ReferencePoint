@@ -1,4 +1,4 @@
-### Historical and recent rate of decline in ###
+### Historical and recent rate of decline ###
 
 # Use a linear regression line to obtain recent (last 10 years) and historical (all years) trends observed #
 # in commercial fishery data (landings, CPUE) and abundance surveys (CPUE, recruitment, biomass)           #
