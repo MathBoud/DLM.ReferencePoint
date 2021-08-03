@@ -23,7 +23,7 @@ Data used in each method example are available in the data folder that contains 
 - turbot.landings.index.csv : Commercial landings from 1970 to 2019 and Spawning stock biomass of turbot estimated from DFO summer survey from 1990 to 2019.
 
 ## R code example
-Each R code that describes the application of the different data-limited methods are availables in the R folder. It is important to note that the majority of those examples use and are based on previous works done by expert in stock assessment sciences.
+Each R code that describes the application of the different data-limited methods are available in the R folder. It is important to note that the majority of those examples use and are based on previous works done by expert in stock assessment sciences.
 
 ### Bmsy and Fmsy proxy (Bmsy.Fmsy.Proxy.R)
 Bmsy proxy: Uses the average of the values in the biomass indices (relative or absolute) during a reference period where fishing has not caused a negative effect on a stock                                                   
