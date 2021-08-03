@@ -116,12 +116,12 @@ Source: Zhou S., Punt A.E., Smith A.D.M., Ye Y., Haddon M., Dichmont C.M., Smith
 
 The optimized catch-only model (OCOM) employs a stock reduction analysis (SRA) using priors for r and stock depletion derived from natural mortality and saturation estimated using the Zhou-BRT method, respectively. The SRA employs a Schaefer biomass dynamics model and an algorithm for identifying feasible parameter combinations to estimate biomass, fishing mortality, and stock status (B/Bmsy, F/Fmsy) time series and biological/management quantities (i.e., r, K, MSY, Bmsy, Fmsy).
 
-### Historical and recent rate of decline
+### Historical and recent rate of decline (Recent&Historical.Trends.R)
 Source : FAO. 2001. (http://www.fao.org/3/Y1455E/Y1455E.htm)
 
 Use a linear regression line to obtain recent (last 10 years) and historical (all years) trends observed in commercial fishery data (landings, CPUE) and abundance surveys (CPUE, recruitment, biomass)
 
-### Simple Stock Synthesis
+### Simple Stock Synthesis (SimpleStockSynthesis.Example.R)
 Source Cope, J. 2013. (https://www.researchgate.net/publication/256998431_Implementing_a_statistical_catch-at-age_model_Stock_Synthesis_as_a_tool_for_deriving_overfishing_limits_in_data-limited_situations)
 SSS function available in the MSEtool package & GitHub SSS package code development available at https://github.com/shcaba/SSS
 
