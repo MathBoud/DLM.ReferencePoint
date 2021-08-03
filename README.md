@@ -123,6 +123,7 @@ Use a linear regression line to obtain recent (last 10 years) and historical (al
 
 ### Simple Stock Synthesis (SimpleStockSynthesis.Example.R)
 Source Cope, J. 2013. (https://www.researchgate.net/publication/256998431_Implementing_a_statistical_catch-at-age_model_Stock_Synthesis_as_a_tool_for_deriving_overfishing_limits_in_data-limited_situations)
+
 SSS function available in the MSEtool package & GitHub SSS package code development available at https://github.com/shcaba/SSS
 
 Simple Stock Synthesis (SSS) is an assessment method for application to data-limited stocks that estimates catch limits. It is an age-structured version of other catch-only methods such as DBSRA and CMSY that uses 1) a Monte-Carlo simulation to obtain probability distributions for M, h, B / K to estimate R0 from an age-structured population dynamics model and 2) use the obtained probability distributions in a DB-SRA to parameterize an age-structured population dynamics model and obtain a posteriori probability distributions for M, h and R0 with a Monte-Carlo approach by Markov chains.
