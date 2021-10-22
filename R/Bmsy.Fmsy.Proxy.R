@@ -69,6 +69,8 @@ plot.BMSY<-ggplot(turbot) +
   annotate(geom="text", x=min(turbot$Year)+5, y=0.4*BMSY+0.05*BMSY, label="LRP",color="red", fontface="bold") +
   theme_classic()
 
+plot.BMSY
+
 #### Fmsy proxy #### 
 #average ratio (landings/stock size biomass from survey) during a reference period of years where fishing has not caused negative effects on the stock size
 
@@ -99,5 +101,7 @@ plot.FMSY<-ggplot(turbot) +
   annotate(geom="text", x=min(turbot$Year)+5, y=FMSY-0.25*FMSY, label="Fmsy",color="black", fontface="bold") +
   annotate(geom="text", x=min(turbot$Year)+5, y=1.25*FMSY+0.25*FMSY, label="Flim",color="red", fontface="bold") +
   theme_classic()
+
+plot.FMSY
 
 ggarrange(plot.BMSY, plot.FMSY, ncol=1, nrow=2)

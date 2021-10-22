@@ -17,8 +17,6 @@ rm(list=ls())
 library(ggplot2)
 library(fishmethods)
 library(dplyr)
-library(datalimited)
-install.packages("datalimited")
 
 # Load Greenland halibut 4RST catch and spawning biomass index time series (turbot.landing.index.csv) from data folder on the github repository https://github.com/MathBoud/C68/data 
 turbot<-read.csv("C:/Users/BoudreauMA/Desktop/C-68/Data-limited method/Data/turbot.landings.index.csv", header = TRUE, sep = ";")
@@ -48,7 +46,7 @@ CatchMSY_Result<-catchmsy(
                  lt = list(low = 0.1, up = 0.5, refyr = 2015),           # list arguments for the depletion level in the selected reference year (refyr). low and up are the lower and upper bounds of depletion level in refyr. refyr can range from the first year to the year after the last year of catch (t+1).
                  sigv = 0,                                               # standard deviation of the log-normal random process error. signv = 0 for no process error.
                  
-                 k=list(dist="unif", low=87143, up=120000, mean=0,sd=0), # list arguments for the carrying capacity. dist is the statistical distribution name from which to sample k. low and up are the lower and upper bounds of k in the selected distribution. mean and sd are the mean and standard deviation for selected distributions.
+                 k=list(dist="unif", low=50000, up=75000, mean=0,sd=0), # list arguments for the carrying capacity. dist is the statistical distribution name from which to sample k. low and up are the lower and upper bounds of k in the selected distribution. mean and sd are the mean and standard deviation for selected distributions.
                  r=list(dist="unif" ,low=0.17, up=0.38, mean=0, sd=0),   # list arguments for the intrinsic growth rate. dist is the statistical distribution name from which to sample r. low and up are the lower and upper bounds of r in the selected distribution. mean and sd are the mean and standard deviation for selected distributions.
                  M=list(dist="unif", low=0.2, up=0.2, mean=0, sd=0),     # list arguments for natural mortality. dist is the statistical distribution name from which to sample M. low and up are the lower and upper bounds of M in the selected distribution. mean and sd are the mean and standard deviation for selected distributions.
                  
@@ -91,7 +89,7 @@ CatchMSY_Result<-catchmsy(year = capelin.landings$Year,
                           l0 = list(low = 0.6, up = 0.9, step = 0), 
                           lt = list(low = 0.3, up = 0.7, refyr = 2012), 
                           sigv = 0,
-                          k=list(dist="unif", low=15000, up=75000, mean=0,sd=0), 
+                          k=list(dist="unif", low=50000, up=75000, mean=0,sd=0), 
                           r=list(dist="unif" ,low=0.3, up=0.6, mean=0, sd=0), 
                           M=list(dist="unif", low=0.3, up=0.4, mean=0, sd=0), 
                           nsims = 30000,

@@ -32,7 +32,7 @@ S <- c("M","F") # If you want to run the analysis with males and females length 
 # Linf<- c(25, 37, 30)
 
 Linf <- 75.8  # von Bertalanffy asymptotic length
-Lmat <- 35    # Length-at-maturity
+Lmat <- 25    # Length-at-maturity
 
 # Years of available data
 startyear <- 1991

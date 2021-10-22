@@ -1009,6 +1009,7 @@ if(dat.ID$Comment != "" && is.na(dat.ID$Comment)==F) cat(dat.ID$Comment,"\n")
 # point out questionable or impossible results
 # negative rates
 if(Ldat$MK[last] < 0 | Ldat$FK[i] < 0) cat("Data unsuitable for LF analysis, negative mortality rates are impossible\n")
+
 # Biomass larger than unexploited
 if(Ldat$BB0[last] >1.1) cat(red("Data unsuitable for LF analysis, biomass exceeds carrying capacity"),"\n")
 

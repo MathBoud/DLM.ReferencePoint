@@ -68,7 +68,7 @@ AmPlaice.Length.DFO <- read.csv("C:/Users/BoudreauMA/Desktop/C-68/Data-limited m
 
 # Bubble plot of length frequency of American plaice in DFO trawl survey from 1998 to 2010
 data.temp.plot<-AmPlaice.Length.DFO %>% filter(annee %in% 1991:2010) %>% group_by(annee,longueur) %>%
-  summarize(Nb.ech=n(), sum.Teleost=sum(nb_cor, na.rm=TRUE)) %>%
+  dplyr::summarize(Nb.ech=n(), sum.Teleost=sum(nb_cor, na.rm=TRUE)) %>%
   as.data.frame()
 
 # Compare both bubble plots produced with commercial sampling and DFO summer trawl survey data
@@ -92,14 +92,14 @@ print(ggarrange(graph1,graph2,
 #### Froese Sustainability Indicators ####
 # Requires known values of length at maturity (Lmat) and maximum length (Lmax) in cm
 Lmax= 68 
-Lmat= 35   
+Lmat= 25   
 
 #### % of mature fish in commercial fishery length sampling ####
 PopMat.Year <- PliCan91_2010 %>% filter(Length > Lmat) %>% group_by(Year) %>%
-  summarize(total.mat=sum(n.tot, na.rm = TRUE))
+  dplyr::summarize(total.mat=sum(n.tot, na.rm = TRUE))
 
 PopTot.Year <- PliCan91_2010 %>% group_by(Year) %>%
-  summarize(total=sum(n.tot, na.rm=TRUE)) %>%
+  dplyr::summarize(total=sum(n.tot, na.rm=TRUE)) %>%
   as.data.frame()
 
 Comm.Mat<-left_join(PopTot.Year, PopMat.Year, by = "Year")
@@ -108,11 +108,11 @@ Comm.Mat$Year<-as.numeric(Comm.Mat$Year)
 
 #### % of mature fish in DFO survey length sampling ####
 DFO.PopMat.Year <- AmPlaice.Length.DFO %>% filter(longueur > (Lmat*10) & annee %in% 1991:2010) %>% group_by(annee) %>%
-  summarize(total.mat=n()) %>%
+  dplyr::summarize(total.mat=n()) %>%
   as.data.frame()
 
 DFO.PopTot.Year <- AmPlaice.Length.DFO %>% filter(annee %in% 1991:2010) %>% group_by(annee) %>%
-  summarize(total=n()) %>%
+  dplyr::summarize(total=n()) %>%
   as.data.frame()
 
 DFO.Mat<-left_join(DFO.PopTot.Year,DFO.PopMat.Year, by = "annee")
@@ -127,7 +127,7 @@ Lopt=(Lopt1+Lopt2)/2
 Lmega=(Lopt1+Lopt2)/2+0.10*(Lopt1+Lopt2)/2
 
 Length.Freq91_2010 <- PliCan91_2010 %>% group_by(Length) %>%
-  summarize(nb=sum(n.tot, na.rm = TRUE)) %>%
+  dplyr::summarize(nb=sum(n.tot, na.rm = TRUE)) %>%
   as.data.frame()
 
 Comm.length.graph<-ggplot() + 
@@ -148,7 +148,7 @@ Comm.length.graph<-ggplot() +
 print(Comm.length.graph)
 
 PopOpt.Year <- PliCan91_2010 %>% filter(Length >= Lopt & Length <= Lmega) %>% group_by(Year) %>%
-  summarize(total.opt=sum(n.tot, na.rm = TRUE))
+  dplyr::summarize(total.opt=sum(n.tot, na.rm = TRUE))
 
 Comm.Opt<-left_join(PopTot.Year, PopOpt.Year, by = "Year")
 Comm.Opt$PourcPopOpt<-Comm.Opt$total.opt/Comm.Opt$total*100
@@ -163,7 +163,7 @@ Lopt=(Lopt1+Lopt2)/2
 Lmega=(Lopt1+Lopt2)/2+0.10*(Lopt1+Lopt2)/2
 
 DFO.Length.Freq91_2010 <- AmPlaice.Length.DFO %>% filter(annee %in% 1991:2010) %>% group_by(longueur) %>%
-  summarize(nb=sum(nb_cor, na.rm = TRUE)) %>%
+  dplyr::summarize(nb=sum(nb_cor, na.rm = TRUE)) %>%
   as.data.frame()
 
 DFO.length.graph<-ggplot() + 
@@ -184,7 +184,7 @@ DFO.length.graph<-ggplot() +
 print(DFO.length.graph)
 
 DFO.PopOpt.Year <- AmPlaice.Length.DFO %>% filter(longueur >= Lopt*10 & longueur <= Lmega*10 & annee %in% 1991:2010) %>% group_by(annee) %>%
-  summarize(total.opt=n()) %>%
+  dplyr::summarize(total.opt=n()) %>%
   as.data.frame()
 
 DFO.Opt<-left_join(DFO.PopTot.Year, DFO.PopOpt.Year, by = "annee")
@@ -192,24 +192,24 @@ DFO.Opt$PourcPopOpt<-DFO.Opt$total.opt/DFO.Opt$total*100
 
 #### % of mega-spawners in commercial fishery and DFO survey ####
 PopMega.Year <- PliCan91_2010 %>% filter(Length > Lmega) %>% group_by(Year) %>%
-  summarize(total.mega=sum(n.tot, na.rm = TRUE))
+  dplyr::summarize(total.mega=sum(n.tot, na.rm = TRUE))
 
 Comm.Mega<-left_join(PopTot.Year,PopMega.Year, by = "Year")
 Comm.Mega$PourcPopMega<-Comm.Mega$total.mega/Comm.Mega$total*100
 Comm.Mega$Year<-as.numeric(Comm.Mega$Year)
 
 DFO.PopMega.Year <- AmPlaice.Length.DFO %>% filter(longueur > Lmega*10 & annee %in% 1991:2010) %>% group_by(annee) %>%
-  summarize(total.mega=n(), na.rm=TRUE) %>%
+  dplyr::summarize(total.mega=n(), na.rm=TRUE) %>%
   as.data.frame()
 
 DFO.Mega<-left_join(DFO.PopTot.Year,DFO.PopMega.Year, by = "annee")
 DFO.Mega$PourcPopMega<-DFO.Mega$total.mega/DFO.Mega$total*100
 
 Comm.stats <- cbind(Comm.Mat,Comm.Opt,Comm.Mega)
-Comm.stats <- select(Comm.stats,c("Year","PourcPopMat","PourcPopOpt","PourcPopMega"))
+Comm.stats <- dplyr::select(Comm.stats,c("Year","PourcPopMat","PourcPopOpt","PourcPopMega"))
 Comm.stats[is.na(Comm.stats)] <- 0
 DFO.stats <- cbind(DFO.Mat,DFO.Opt,DFO.Mega)
-DFO.stats <- select(DFO.stats,c("annee","PourcPopMat","PourcPopOpt","PourcPopMega"))
+DFO.stats <- dplyr::select(DFO.stats,c("annee","PourcPopMat","PourcPopOpt","PourcPopMega"))
 DFO.stats[is.na(DFO.stats)] <- 0
 
 #### Graph graph with Froese Sustainability indicator ####

@@ -14,6 +14,8 @@ rm(list=ls())
 
 # Activate required package
 library(datalimited2)
+library(ggplot2)
+library(dplyr)
 
 # Load Greenland halibut 4RST catch and spawning biomass index time series (turbot.landing.index.csv) from data folder on the github repository https://github.com/MathBoud/C68/data 
 turbot<-read.csv("C:/Users/BoudreauMA/Desktop/C-68/Data-limited method/Data/turbot.landings.index.csv", header = TRUE, sep = ";")

@@ -19,6 +19,7 @@ rm(list=ls())
 # Activate required packages
 library(ggplot2)
 library(datalimited2)
+library(dplyr)
 
 # Load Greenland halibut 4RST catch and spawning biomass index time series (turbot.landing.index.csv) from data folder on the github repository https://github.com/MathBoud/C68/data 
 turbot<-read.csv("C:/Users/BoudreauMA/Desktop/C-68/Data-limited method/Data/turbot.landings.index.csv", header = TRUE, sep = ";")
@@ -118,6 +119,8 @@ plot.Landings<-ggplot2::ggplot(capelin.landings) +
   xlim(1960,2021) +
   ylim(0,15000) +
   theme_classic()
+
+plot.Landings
 
 #Using the 1975-2019 period where the after the exploratory phase of the fishery
 x<-filter(capelin.landings, Year %in% 1975:2019)

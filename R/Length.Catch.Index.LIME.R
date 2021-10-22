@@ -32,6 +32,7 @@ library(LIME)
 library(ggplot2)
 library(dplyr)
 library(reshape2)
+library(LBSPR)
 
 #### Specify biological inputs and parameter starting values ####
 # single fleet
@@ -166,7 +167,6 @@ inputs_LC <- create_inputs(lh=lh, input_data=list("years"=years, "LF"=LF_df))
 # Run LBSPR and LIME models #
 
 ## LBSPR
-library(LBSPR)
 LB_pars <- new("LB_pars")
 LB_pars@MK <- inputs_LC$M/inputs_LC$vbk
 LB_pars@Linf <- inputs_LC$linf

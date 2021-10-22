@@ -12,7 +12,6 @@
 #####################################################################################
 
 rm(list=ls())
-layout(1)
 
 # Load require packages
 library(dplyr)
@@ -27,7 +26,7 @@ str(length_data)
 length_data <- length_data %>% dplyr::rename(Length = Class_long, Year = Annee) %>% as.data.frame()
 
 # If you want to test a different combination of years
-length_data <- subset (length_data, Year %in% 1991:2010)
+length_data <- subset(length_data, Year %in% 1991:2006)
 
 # the following lines of code are data transformation to obtain a length matrix to put in the input list used to run MLZ model
 years.vect<-as.numeric(unique(length_data$Year))
@@ -77,7 +76,7 @@ new.dataset<-new("MLZ_data",
                  vbLinf = 75.8,                         # Von Bertalanffy Asymptotic length parameter 
                  vbK = 0.066,                           # Von Bertalanffy K parameter
                  vbt0 = -0.425,                         # von Bertalanffy t0 parameter
-                 Lc = 38,                             # Length of full selection
+                 Lc = 35,                             # Length of full selection
                  M = 0.25,                              # Natural mortality rate. If specified, this is also the lower limit for Z                 
                  lwb = 3.06)                            # Exponent b from the allometric length-weight function W = aL^b
                      
@@ -125,7 +124,7 @@ est <- ML(
        grid.search = TRUE,  # logical. If TRUE, a grid search will be performed using the profile_ML function to find the best starting values for the change points (the years when mortality changes). Ignored if ncp = 0 or if start is provided     
        parallel = TRUE,     # logical. Whether grid search is performed with parallel processing. Ignored if grid.search = FALSE
        min.time = NA,       # The minimum number of years between each change point for the grid search, passed to profile_ML. Not used if grid.search = FALSE
-       Z.max = 0.7,         # The upper boundary for Z estimates
+       Z.max = 0.5,         # The upper boundary for Z estimates
        figure = TRUE)       # logical. If TRUE, a call to plot of observed and predicted mean lengths will be produced
 
 # Summary and plot method functions are also available for MLZ_model objects
@@ -138,6 +137,11 @@ layout(1)
 model1 <- ML(new.dataset, ncp = 0)
 model2 <- ML(new.dataset, ncp = 1)
 model3 <- ML(new.dataset, ncp = 2)
+
+
+summary(model1)
+summary(model2)
+summary(model3)
 
 # The compare_models function allow to compare model runs AIC and produces a plot of the predicted data.
 ?MLZ::compare_models
