@@ -27,7 +27,6 @@ Each R code that describes the application of the different data-limited methods
 
 ### Bmsy and Fmsy proxy
 Bmsy proxy: Uses the average of the values in the biomass indices (relative or absolute) during a reference period where fishing has not caused a negative effect on a stock                                                   
-
 Fmsy proxy: Uses the average of the ratio between the commercial catches and the values in the biomass indices (relative or absolute) during a reference period where fishing has not caused a negative effect on a stock
 
 ### Boosted regression tree model (BRT)
@@ -44,6 +43,11 @@ The method of Martell and Froese (2012) is used to produce estimates of MSY wher
 Source: Anderson C.A, Branch, T.A., Ricard, D. & Lotze, H.K. 2012 (http://lotzelab.biology.dal.ca/wp-content/uploads/2015/11/Anderson-etal_2012_ICES1.pdf)
 
 The method applies a smoothing factor to the commercial catch data to estimate a ratio proportional to the maximum value of the catch and to determine a qualitative state of the stock based on this ratio
+
+### Scalar Catch method
+Source: Berkson, J., Barbieri, L., Cadrin S.X. and Cass-Calay, S.L. 2011. (https://www.researchgate.net/publication/255181180_Calculating_acceptable_biological_catch_for_stocks_that_have_reliable_catch_data_only_Only_Reliable_Catch_Stocks_-_ORCS)
+
+This method uses a statistical measure (mean, median, etc.) of the commercial catch values during a time series or a portion of it and applies a reduction factor proportional to the state of the population during this period.
 
 ### CMSY catch-only stock assessment model
 Source: Froese R., Demirel N., Coro G., Kleisner K.M., Winker H. 2017. (https://onlinelibrary.wiley.com/doi/full/10.1111/faf.12190)
@@ -130,7 +134,7 @@ SSS function available in the MSEtool package & GitHub SSS package code developm
 Simple Stock Synthesis (SSS) is an assessment method for application to data-limited stocks that estimates catch limits. It is an age-structured version of other catch-only methods such as DBSRA and CMSY that uses 1) a Monte-Carlo simulation to obtain probability distributions for M, h, B / K to estimate R0 from an age-structured population dynamics model and 2) use the obtained probability distributions in a DB-SRA to parameterize an age-structured population dynamics model and obtain a posteriori probability distributions for M, h and R0 with a Monte-Carlo approach by Markov chains.
 
 ### Stochastic surplus production model in continuous time (SPiCT)
-Source: Pedersen and Berg 2016 (https://onlinelibrary.wiley.com/doi/full/10.1111/faf.12174)
+Source: Pedersen, M.W. and Berg, C.W. 2016 (https://onlinelibrary.wiley.com/doi/full/10.1111/faf.12174)
 
 GitHub code development available at https://github.com/DTUAqua/spict
 
