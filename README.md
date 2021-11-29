@@ -7,7 +7,7 @@ It has been developped following the new provisions of the Fisheries Act of the 
 This tool is intended as a guide to help stock assessment biologists in finding a set of methods that could apply to the available data like commercial landings, fishery length composition and biomass survey.
 
 ## Decision Tool
-Decision tree process to select a set of methods that could be use according to data availability. The first step is to classify a stock in one of the data-limited stock (DLS) categories depending on the availability of commercial landings, biomass index and catch-at-length time series. After that, different methods can be selected according to the specie life history traits available and depending in which category the stock has been classified (DLS-A, DLS-B, DLS-C or DLS-D). 
+Decision tree process to select a set of methods that could be use according to data availability. The first step is to classify a stock in one of the data-limited stock (DLS) categories depending on the availability of commercial landings, biomass index and catch-at-length time series. After that, different methods can be selected according to the specie life history traits and stock dynamic available, depending in which category the stock has been classified (DLS-A, DLS-B, DLS-C or DLS-D). 
 
 ## Data sets
 Data used in each method example are available in the data folder that contains :
